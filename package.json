@@ -1,15 +1,23 @@
 {
   "name": "ether-node-api",
+  "author": "Diego H. Gurpegui (http://diegogurpegui.com)",
   "version": "0.0.1",
+  "license": "MIT",
   "description": "Ethereum Node API. Interacting with Ethereum network thru a RESTful API or Console.",
+  "homepage": "https://github.com/improvein/ether-node-api#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/improvein/ether-node-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/improvein/ether-node-api/issues"
+  },
   "main": "api.js",
   "scripts": {
     "postinstall": "node postinstall.js",
     "start": "node api",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Diego H. Gurpegui (http://diegogurpegui.com)",
-  "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.2",
     "commander": "^2.11.0",
