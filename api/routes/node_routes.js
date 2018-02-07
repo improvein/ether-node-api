@@ -35,12 +35,13 @@ module.exports = function (app, web3) {
     var fromKey = req.body.private_key
     var to = req.body.to
     var wei = req.body.wei
+    var gasPrice = req.body.gas_price
 
-    txSrv.send(from, fromKey, to, wei)
+    txSrv.send(from, fromKey, to, wei, gasPrice)
       .then(function (result) {
         res.send({ data: result })
       }, function (err) {
-        res.send({ error: err })
+        res.send({ error: err.message })
       })
   })
 

@@ -75,7 +75,7 @@ module.exports = function (web3) {
         // get the reference to the contract method, with the corresponding parameters
         var methodRef = contractInstance[method].getData.apply(this, Object.values(args))
 
-        var privateKeyBuff = new Buffer(privateKey, 'hex')
+        var privateKeyBuff = Buffer.from(privateKey, 'hex')
 
         // get the current gas price, either from config or from the node
         var gasPrice = config.eth.gas_price
@@ -106,7 +106,7 @@ module.exports = function (web3) {
         if (gasLimit === 'auto') {
           console.log('Auto calculating gas limit...')
           gasLimit = web3.eth.estimateGas(rawTx)
-          console.log('Estimated gas:' + gasLimit)
+          console.log('Estimated gas: ' + gasLimit)
           tx.gasLimit = gasLimit
         }
         // sign the transaction
