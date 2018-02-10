@@ -31,14 +31,13 @@ module.exports = function (web3) {
       if (gasPrice === 'auto') {
         gasPrice = web3.eth.gasPrice
         gasPrice = gasPrice.toString(10)
-      }    
+      }
 
       // get the gas limit from the config (if exists). Otherwise leave "auto"
       if (typeof gasLimit === 'undefined' || gasLimit == null) {
         gasLimit = config.eth.gas_limit
       }
       if (gasLimit !== 'auto') {
-        // gasLimit = new BigNumber(config.eth.gas_limit);
         gasLimit = web3.toHex(config.eth.gas_limit)
       }
 
@@ -55,7 +54,7 @@ module.exports = function (web3) {
         gasLimit: gasLimit,
         chainId: config.eth.chain_id
       }
-      
+
       // create and sign the Tx
       var tx = new Tx(rawTx)
       // see the fees required for the Tx
@@ -82,11 +81,19 @@ module.exports = function (web3) {
     return promise
   }
 
+  /**
+   * Send a Transaction, passed in serialized and signed
+   * @param {string} serializedTx Tx serialized in HEX format
+   */
   module.sendRaw = async function (serializedTx) {
     var promise = new Promise((resolve, reject) => {
       var result = {}
 
-      web3.eth.sendRawTransaction('0x' + serializedTx.toString('hex'), (err, txHash) => {
+      if (!serializedTx.startsWith('0x')) {
+        serializedTx = '0x' + serializedTx
+      }
+
+      web3.eth.sendRawTransaction(serializedTx, (err, txHash) => {
         if (err) {
           return reject(err)
         } else {
