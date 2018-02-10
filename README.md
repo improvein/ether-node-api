@@ -33,7 +33,10 @@ $ node api
 You'll see a message indicating that the service is already running.
 
 ### Endpoints
-(@TODO)
+
+The OpenAPI Specification for the REST API is in the [/docs/rest_api.yaml](/docs/rest_api.yaml) file
+
+Also, this URL has an online UI for that documentation: https://app.swaggerhub.com/apis/improvein/ether-node-api/0.0.2
 
 Console commands
 ----------------
