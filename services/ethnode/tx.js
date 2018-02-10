@@ -30,7 +30,8 @@ module.exports = function (web3) {
       }
       if (gasPrice === 'auto') {
         gasPrice = web3.eth.gasPrice
-      }
+        gasPrice = gasPrice.toString(10)
+      }    
 
       // get the gas limit from the config (if exists). Otherwise leave "auto"
       if (typeof gasLimit === 'undefined' || gasLimit == null) {
@@ -41,15 +42,20 @@ module.exports = function (web3) {
         gasLimit = web3.toHex(config.eth.gas_limit)
       }
 
+      // calculate nonce
+      var nonce = web3.eth.getTransactionCount(from)
+
       // prepare the Tx parameters
       var rawTx = {
+        nonce: nonce,
         from: from,
         to: to,
-        value: wei.toString(10),
-        gasPrice: gasPrice.toString(10),
+        value: web3.toHex(wei), // .toString(10),
+        gasPrice: web3.toHex(gasPrice),
         gasLimit: gasLimit,
         chainId: config.eth.chain_id
       }
+      
       // create and sign the Tx
       var tx = new Tx(rawTx)
       // see the fees required for the Tx
@@ -57,7 +63,7 @@ module.exports = function (web3) {
         console.log('Auto calculating gas limit...')
         gasLimit = web3.eth.estimateGas(rawTx)
         console.log('Estimated gas: ' + gasLimit)
-        tx.gasLimit = gasLimit
+        tx.gasLimit = web3.toHex(gasLimit)
       }
       tx.sign(privateKey)
 
