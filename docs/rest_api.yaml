@@ -1,0 +1,281 @@
+swagger: "2.0"
+info:
+  description: "Ethereum Node API. Interacting with Ethereum network thru a REST API."
+  version: "0.0.2"
+  title: "Ethereum Node API"
+  contact:
+    email: "info@improvein.com"
+  license:
+    name: "MIT License"
+    url: "https://raw.githubusercontent.com/improvein/ether-node-api/master/LICENSE"
+basePath: "/"
+tags:
+- name: "node"
+  description: "Interacting with the Ethereum Node"
+- name: "address"
+  description: "Operations for/with addresses"
+- name: "tx"
+  description: "Operations for/with transactions (Tx)"
+- name: "contract"
+  description: "Operations with Contracts"
+schemes:
+- "http"
+paths:
+  /node/status:
+    get:
+      tags:
+      - "node"
+      summary: "Get the current status of the Node"
+      description: ""
+      operationId: "getNodeStatus"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Node information"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: object
+                properties:
+                  connected:
+                    type: boolean
+                  coinbase:
+                    type: string
+                  coinbase_balance:
+                    type: string
+        500:
+          description: "An unexpected error ocurred"
+          schema:
+            $ref: "#/definitions/APIResponseError"
+  /node/address/{address}/balance:
+    get:
+      tags:
+      - "address"
+      summary: "Gets the balance of a specified Address"
+      description: ""
+      operationId: "getAddressBalance"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "address"
+        in: "path"
+        description: "Address to check the balance of"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Balance of the Address"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: object
+                properties:
+                  address:
+                    type: string
+                  balance:
+                    type: string
+        500:
+          description: "An unexpected error ocurred"
+          schema:
+            $ref: "#/definitions/APIResponseError"
+  /node/tx/{txhash}:
+    get:
+      tags:
+      - "tx"
+      summary: "Gets information about a specified transaction"
+      description: ""
+      operationId: "getTxInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "txhash"
+        in: "path"
+        description: "Tx hash to get information about"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: object
+                properties:
+                  tx:
+                    type: string
+        500:
+          description: "An unexpected error ocurred"
+          schema:
+            $ref: "#/definitions/APIResponseError"
+  /node/tx:
+    post:
+      tags:
+      - "tx"
+      summary: "Creates (sends) a transaction on Ethereum"
+      description: "Creates (sends) a transaction to send Eth (wei) from an address to another. It could send an arbitrary transaction if only the 'raw' parameter is provided."
+      operationId: "postNodeTx"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "body"
+          name: "tx"
+          description: "Information about the transaction, or the raw transaction in HEX format. Either one. The 'raw' field and the rest are mutually exclusive"
+          schema:
+            type: object
+            properties:
+              raw:
+                description: "Tx signed and represented in HEX"
+                type: "string"
+              from:
+                description: "Address to send the Tx from"
+                type: "string"
+              private_key:
+                description: "Private key of the 'from' address"
+                type: "string"
+              to:
+                description: "Destination address"
+                type: "string"
+              wei:
+                description: "Amount (in wei) to transfer"
+                type: "string"
+      responses:
+        200:
+          description: "Transaction sent"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: object
+                properties:
+                  tx_hash:
+                    type: string
+        500:
+          description: "An unexpected error ocurred"
+          schema:
+            $ref: "#/definitions/APIResponseError"
+  /node/contract/{name}/{address}/call/{method}:
+    get:
+      tags:
+      - "contract"
+      summary: "Calls a method of a contract (read-only)"
+      description: ""
+      operationId: "getContractCallMethod"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "Name of the Contract"
+        required: true
+        type: "string"
+      - name: "address"
+        in: "path"
+        description: "Address of the deployed contract"
+        required: true
+        type: "string"
+      - name: "method"
+        in: "path"
+        description: "Method of the contract to call"
+        required: true
+        type: "string"
+      - name: "args"
+        in: "query"
+        description: "Optional arguments to pass to the method"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Contract method called"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: object
+                properties:
+                  contract:
+                    type: string
+                  method:
+                    type: string
+                  args:
+                    type: object
+                  result:
+                    type: string
+        500:
+          description: "An unexpected error ocurred"
+          schema:
+            $ref: "#/definitions/APIResponseError"
+  /node/contract/{name}/{address}/transact/{method}:
+    post:
+      tags:
+      - "contract"
+      summary: "Transact with a Contract (broadcasted and impacted in the blockchain)"
+      description: ""
+      operationId: "postContractTransactMethod"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "Name of the Contract"
+        required: true
+        type: "string"
+      - name: "address"
+        in: "path"
+        description: "Address of the deployed contract"
+        required: true
+        type: "string"
+      - name: "method"
+        in: "path"
+        description: "Method of the contract to call"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "contract_tx"
+        description: "Transaction for a Contract"
+        schema:
+          type: object
+          properties:
+            caller_address:
+              description: "Address of the caller of the method"
+              type: "string"
+            private_key:
+              description: "Private key of the caller of the method"
+              type: "string"
+            args:
+              description: "Arguments to pass to the method"
+              type: "object"
+      responses:
+        200:
+          description: "Contract transaction call sent"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: object
+                properties:
+                  contract:
+                    type: string
+                  method:
+                    type: string
+                  args:
+                    type: object
+                  tx_hash:
+                    type: string
+        500:
+          description: "An unexpected error ocurred"
+          schema:
+            $ref: "#/definitions/APIResponseError"
+definitions:
+  APIResponseError:
+    type: "object"
+    properties:
+      error:
+        type: "string"
