@@ -28,6 +28,6 @@ app.all('/*', function (req, res, next) { // CORS headers
 require('./api/routes/index')(app, web3)
 
 // Start the server
-var server = app.listen(port, () => {
+app.listen(port, () => {
   console.log('Ethereum Node HTTP RESTful API server started on: ' + port + ' ... \n')
 })
