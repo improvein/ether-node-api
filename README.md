@@ -71,3 +71,7 @@ This is the list of commands (you can use the `--help` to find more info about e
 
   Gets the block information
 
+Contributing
+----------------
+We encourage everyone to contribute to this project with requests, comments, suggestions and even code improvements.
+Everything is welcome, just [report an issue](https://github.com/improvein/ether-node-api/issues) or [add a PR](https://github.com/improvein/ether-node-api/pulls).
